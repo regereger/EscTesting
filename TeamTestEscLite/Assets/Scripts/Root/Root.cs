@@ -1,15 +1,16 @@
 using Leopotam.EcsLite;
-using Systems;
 using Tools;
 using UniRx;
+using Views;
 
-namespace Core
+namespace Root
 {
   internal class Root : BaseDisposable
   {
     public struct Ctx
     {
       // init params for game if needed - configuration release dev etc.
+      public GlobalConfigView globalConfig;
     }
 
     private readonly Ctx _ctx;
@@ -23,14 +24,25 @@ namespace Core
       _ecsWorld = new EcsWorld();
       _systems = new EcsSystems(_ecsWorld);
       _physSystems = new EcsSystems(_ecsWorld);
-      
-      // add systems to global systems
-      _systems.Add(new PlayerInitSystem());
-      
+
       // init global systems
       _systems.Init();
       _physSystems.Init();
+
+      StartSystemExecute();
       
+      // here can be complicated logic to choose which level to load ( from UI or smth ) 
+      Level.Ctx lvlCtx = new Level.Ctx
+      {
+        ecsWorld = _ecsWorld,
+        globalConfig = _ctx.globalConfig
+      };
+      Level level = new Level(lvlCtx);
+      AddDispose(level);
+    }
+
+    private void StartSystemExecute()
+    {
       // start global update and fixed update systems
       AddDispose(Observable.EveryUpdate().Subscribe(_ => _systems.Run()));
       AddDispose(Observable.EveryFixedUpdate().Subscribe(_ => _physSystems.Run()));
