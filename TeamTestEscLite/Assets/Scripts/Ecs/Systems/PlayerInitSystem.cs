@@ -29,6 +29,10 @@ namespace Ecs.Systems
       EcsPool<PlayerAnimationComponent> poolAnim = world.GetPool<PlayerAnimationComponent> ();
       ref PlayerAnimationComponent playerAnimation = ref poolAnim.Add(playerEntity);
       playerAnimation.animator = playerObj.GetComponentInChildren<Animator>();
+
+      EcsPool<PlayerTransformComponent> poolT = world.GetPool<PlayerTransformComponent>();
+      ref PlayerTransformComponent transformComponent = ref poolT.Add(playerEntity);
+      transformComponent.transform = playerObj.transform;
       
       // put context to scripts
       CollisionDetectionView detectionView = playerObj.GetComponent<CollisionDetectionView>();

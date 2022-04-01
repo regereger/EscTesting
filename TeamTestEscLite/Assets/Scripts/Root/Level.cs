@@ -19,7 +19,6 @@ namespace Root
     private readonly Ctx _ctx;
     private EcsSystems _initSystems;
     private EcsSystems _updateSystems;
-    private EcsSystems _physUpdateSystems;
     
     private const string SCENE_NAME = "Level";
 
@@ -54,9 +53,9 @@ namespace Root
       _initSystems.Init();
       
       _updateSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
-      _physUpdateSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
 
       _updateSystems
+        .Add(new CameraSystem())
         .Add(new PositionInputSystem())
         .Add(new PlayerMoveVisualSystem())
         .Add(new PlayerMoveSystem())
@@ -65,17 +64,14 @@ namespace Root
         .Add(new OpenDoorSystem());
 
       _updateSystems.Init();
-      _physUpdateSystems.Init();
 
       // start update and fixed update systems
       AddDispose(Observable.EveryUpdate().Subscribe(_ => _updateSystems.Run()));
-      AddDispose(Observable.EveryFixedUpdate().Subscribe(_ => _physUpdateSystems.Run()));
     }
     
     protected override void OnDispose()
     {
       _updateSystems?.Destroy();
-      _physUpdateSystems?.Destroy();
       base.OnDispose();
     }
   }
