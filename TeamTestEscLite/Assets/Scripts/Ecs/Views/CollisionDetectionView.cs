@@ -36,7 +36,7 @@ namespace Ecs.Views
       ref OnTriggerEnterEvent hitComponent = ref hitPool.Get(hit);
 
       hitComponent.Sender = transform.root.gameObject;
-      hitComponent.Collider = other;
+      hitComponent.Reciever = other.gameObject;
     }
   }
 }

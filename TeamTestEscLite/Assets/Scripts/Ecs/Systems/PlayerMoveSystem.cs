@@ -1,6 +1,5 @@
 using Ecs.Components;
 using Leopotam.EcsLite;
-using UnityEngine;
 
 namespace Ecs.Systems
 {
@@ -9,21 +8,22 @@ namespace Ecs.Systems
     public void Run(EcsSystems systems)
     {
       EcsWorld world = systems.GetWorld();
-      
-      // EcsFilter requestFliter = world.Filter<MoveRequest>().End();
-      // foreach (int entity in requestFliter)
-      // {
-      //   ref PlayerMoveComponent weapon = ref movers.Get(entity);
-      //   
-      // }
 
-      // get player move component
-      EcsFilter filter = world.Filter<PlayerMoveComponent>().End();
-      EcsPool<PlayerMoveComponent> movers = world.GetPool<PlayerMoveComponent>();
-      foreach (int entity in filter)
+      EcsFilter moveFilter = world.Filter<MoveRequest>().End();
+      EcsFilter playerFilter = world.Filter<PlayerMoveComponent>().End();
+
+      EcsPool<PlayerMoveComponent> playerPool = world.GetPool<PlayerMoveComponent>();
+      EcsPool<MoveRequest> playerInputPool = world.GetPool<MoveRequest>();
+
+      foreach (int entity in moveFilter)
       {
-        ref PlayerMoveComponent weapon = ref movers.Get(entity);
-        // weapon.navMeshAgent.SetDestination(new Vector3(1,0.5f,1));
+        ref MoveRequest playerInputComponent = ref playerInputPool.Get(entity);
+        foreach (int pEntity in playerFilter)
+        {
+          ref PlayerMoveComponent playerComponent = ref playerPool.Get(pEntity);
+          playerComponent.navMeshAgent.SetDestination(playerInputComponent.destination);
+        }
+        world.DelEntity(entity);
       }
     }
   }

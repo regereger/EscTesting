@@ -1,4 +1,5 @@
 using Constants;
+using Ecs.Components;
 using Leopotam.EcsLite;
 using UnityEngine;
 using Views;
@@ -28,11 +29,21 @@ namespace Ecs.Systems
             if (hit.transform && hit.transform.CompareTag(Tags.FLOOR_TAG))
             {
               Debug.Log($"we hit floor at {hit.point}");
+              GotDestinationPoint(systems, hit.point);
               break;
             }
           }
         }
       }
+    }
+
+    private void GotDestinationPoint(EcsSystems systems, Vector3 destination)
+    {
+      int entity = systems.GetWorld().NewEntity();
+      EcsPool<MoveRequest> movePool = systems.GetWorld().GetPool<MoveRequest>();
+      movePool.Add(entity);
+      ref MoveRequest moveRequest = ref movePool.Get(entity);
+      moveRequest.destination = destination;
     }
   }
 }
