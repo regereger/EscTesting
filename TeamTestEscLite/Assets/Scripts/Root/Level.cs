@@ -60,6 +60,7 @@ namespace Root
         .Add(new PositionInputSystem())
         .Add(new PlayerMoveVisualSystem())
         .Add(new PlayerMoveSystem())
+        .Add(new PlayerAnimationSystem())
         .Add(new CollisionSystem())
         .Add(new OpenDoorSystem());
 

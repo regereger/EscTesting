@@ -1,6 +1,7 @@
 using Ecs.Components;
 using Ecs.Views;
 using Leopotam.EcsLite;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 using Views;
@@ -17,12 +18,17 @@ namespace Ecs.Systems
       GameObject playerObj = Object.Instantiate(gameSettings.globalConfigView.playerPrefab, gameSettings.levelConfigView.PlayerSpawn.position,
         Quaternion.identity);
 
-      // prepare move component
+      // prepare components
       EcsWorld world = systems.GetWorld();
-      int newEntity = world.NewEntity();
-      EcsPool<PlayerMoveComponent> pool = world.GetPool<PlayerMoveComponent> ();
-      ref PlayerMoveComponent playerMoveComponent = ref pool.Add(newEntity);
-      playerMoveComponent.navMeshAgent = playerObj.GetComponent<NavMeshAgent>();
+      int playerEntity = world.NewEntity();
+      
+      EcsPool<PlayerMoveComponent> poolMove = world.GetPool<PlayerMoveComponent> ();
+      ref PlayerMoveComponent playerMove = ref poolMove.Add(playerEntity);
+      playerMove.navMeshAgent = playerObj.GetComponent<NavMeshAgent>();
+      
+      EcsPool<PlayerAnimationComponent> poolAnim = world.GetPool<PlayerAnimationComponent> ();
+      ref PlayerAnimationComponent playerAnimation = ref poolAnim.Add(playerEntity);
+      playerAnimation.animator = playerObj.GetComponentInChildren<Animator>();
       
       // put context to scripts
       CollisionDetectionView detectionView = playerObj.GetComponent<CollisionDetectionView>();
