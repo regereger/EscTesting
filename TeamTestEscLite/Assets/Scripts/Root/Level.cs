@@ -17,8 +17,9 @@ namespace Root
     }
 
     private readonly Ctx _ctx;
-    private EcsSystems _systems;
-    private EcsSystems _physSystems;
+    private EcsSystems _initSystems;
+    private EcsSystems _updateSystems;
+    private EcsSystems _physUpdateSystems;
     
     private const string SCENE_NAME = "Level";
 
@@ -41,29 +42,36 @@ namespace Root
       // find scene config
       LevelConfigView levelConfigView = Object.FindObjectOfType<LevelConfigView>();
 
-      Settings settings = new Settings
+      GameSettings gameSettings = new GameSettings
       {
         globalConfigView = _ctx.globalConfig,
         levelConfigView = levelConfigView
       };
 
-      _systems = new EcsSystems(_ctx.ecsWorld, settings);
-      _physSystems = new EcsSystems(_ctx.ecsWorld, settings);
+      _initSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
+      _initSystems
+        .Add(new PlayerInitSystem());
+      _initSystems.Init();
+      
+      _updateSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
+      _physUpdateSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
 
-      _systems.Add(new PlayerInitSystem());
+      _updateSystems
+        .Add(new PlayerMoveSystem())
+        .Add(new PositionInputSystem());
         
-      _systems.Init();
-      _physSystems.Init();
+      _updateSystems.Init();
+      _physUpdateSystems.Init();
 
       // start update and fixed update systems
-      AddDispose(Observable.EveryUpdate().Subscribe(_ => _systems.Run()));
-      AddDispose(Observable.EveryFixedUpdate().Subscribe(_ => _physSystems.Run()));
+      AddDispose(Observable.EveryUpdate().Subscribe(_ => _updateSystems.Run()));
+      AddDispose(Observable.EveryFixedUpdate().Subscribe(_ => _physUpdateSystems.Run()));
     }
     
     protected override void OnDispose()
     {
-      _systems?.Destroy();
-      _physSystems?.Destroy();
+      _updateSystems?.Destroy();
+      _physUpdateSystems?.Destroy();
       base.OnDispose();
     }
   }

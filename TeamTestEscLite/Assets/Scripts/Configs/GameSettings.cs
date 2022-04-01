@@ -1,6 +1,6 @@
 namespace Views
 {
-  internal class Settings
+  internal class GameSettings
   {
     public GlobalConfigView globalConfigView;
     public LevelConfigView levelConfigView;

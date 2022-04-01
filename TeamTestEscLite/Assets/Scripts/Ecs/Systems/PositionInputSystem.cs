@@ -1,25 +1,35 @@
+using Constants;
 using Leopotam.EcsLite;
 using UnityEngine;
+using Views;
 
 namespace Ecs.Systems
 {
   internal class PositionInputSystem : IEcsRunSystem
   {
+    private readonly RaycastHit[] _results;
+
+    public PositionInputSystem()
+    {
+      _results = new RaycastHit[5];
+    }
+
     public void Run(EcsSystems systems)
     {
+      GameSettings gameSettings = systems.GetShared<GameSettings>();
       if (Input.GetMouseButtonDown(0))
       {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
- 
-        if(Physics.Raycast (ray, out hit))
+        Ray ray = gameSettings.levelConfigView.MainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.RaycastNonAlloc(ray, _results) > 0)
         {
-          if(hit.transform.name == "Player")
+          foreach (RaycastHit hit in _results)
           {
-            Debug.Log ("This is a Player");
-          }
-          else {
-            Debug.Log ("This isn't a Player");                
+            if (hit.transform && hit.transform.CompareTag(Tags.FLOOR_TAG))
+            {
+              Debug.Log($"we hit floor at {hit.point}");
+              break;
+            }
           }
         }
       }
