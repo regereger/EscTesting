@@ -57,9 +57,11 @@ namespace Root
       _physUpdateSystems = new EcsSystems(_ctx.ecsWorld, gameSettings);
 
       _updateSystems
+        .Add(new PositionInputSystem())
         .Add(new PlayerMoveSystem())
-        .Add(new PositionInputSystem());
-        
+        .Add(new CollisionSystem())
+        .Add(new OpenDoorSystem());
+
       _updateSystems.Init();
       _physUpdateSystems.Init();
 

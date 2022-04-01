@@ -24,12 +24,6 @@ namespace Ecs.Views
     {
       Log.Info("OnTriggerEnter");
       
-      if (other.CompareTag(Tags.GROUND_BUTTON_TAG))
-      {
-        other.enabled = false;
-        Log.Info("OnTriggerEnter with button");
-      }
-      
       int hit = _ctx.ecsWorld.NewEntity();
       EcsPool<OnTriggerEnterEvent> hitPool = _ctx.ecsWorld.GetPool<OnTriggerEnterEvent>();
       hitPool.Add(hit);

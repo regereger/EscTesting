@@ -1,18 +1,16 @@
 using Tools;
+using UnityEngine;
 
 namespace Ecs.Views
 {
   internal class GroundButtonView : BaseMonoBehaviour
   {
-    public struct Ctx { }
+    [SerializeField]
+    private GameObject door;
+    [SerializeField]
+    private Collider myCollider;
 
-    private readonly Ctx _ctx;
-
-    public GroundButtonView(Ctx ctx)
-    {
-      _ctx = ctx;
-    }
-
-    
+    public GameObject Door => door;
+    public Collider MyCollider => myCollider;
   }
 }
