@@ -58,6 +58,7 @@ namespace Root
 
       _updateSystems
         .Add(new PositionInputSystem())
+        .Add(new PlayerMoveVisualSystem())
         .Add(new PlayerMoveSystem())
         .Add(new CollisionSystem())
         .Add(new OpenDoorSystem());

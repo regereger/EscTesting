@@ -24,7 +24,7 @@ namespace Ecs.Systems
         {
           buttonView.MyCollider.enabled = false;
           buttonView.transform.DOMoveY(0.05f, 0.5f);
-          buttonView.Door.transform.DOMoveY(-1f, 0.5f);
+          buttonView.Door.transform.DOMoveY(-1.05f, 0.5f);
           // you can cache components on door object with view on it
           buttonView.Door.GetComponent<Collider>().enabled = false;
           buttonView.Door.GetComponent<NavMeshObstacle>().enabled = false;
